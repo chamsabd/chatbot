@@ -7,6 +7,9 @@ from groq_wrapper import groq_search, scorer_par_groq
 
 app = Flask(__name__)
 
+@app.route("/")
+def home():
+    return "API is running on Render 🚀"
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
