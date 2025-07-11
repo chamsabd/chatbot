@@ -1,3 +1,4 @@
+import logging
 import os
 from flask import Flask, request, jsonify
 from prompt_rewriter import reformuler_en_requete
@@ -22,15 +23,19 @@ def chat():
         return jsonify({"error": "Message is required."}), 400
 
     try:
+        logging.warning("Route /api/chat called")
         # Reformuler la requête
         requete = reformuler_en_requete(message)
+        logging.warning("reformuler_en_requete called")
 
         # Recherche avec searxng
         resultats = searxng_search(requete,instance_url="https://bidata.onrender.com")
+        logging.warning("searxng_search called")
 
         # Générer la réponse avec groq
         reponse_groq = groq_search(requete, format_search_results(resultats))
         texte_reponse = reponse_groq.get("choices", [{}])[0].get("message", {}).get("content", "")
+        logging.warning("groq_search called")
 
         # Extraire entités
         entites = extraire_entites(texte_reponse)
