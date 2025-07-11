@@ -10,13 +10,6 @@ import requests
 
 import difflib
 
-import spacy
-
-MODELS = {
-    "fr": spacy.load("fr_core_news_sm"),
-    "en": spacy.load("en_core_web_sm"),
-}
-
 
 
 

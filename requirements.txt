@@ -5,3 +5,5 @@ langdetect==1.0.9
 gunicorn==23.0.0
 ctransformers==0.2.27
 Flask-Cors==4.0.0
+fr_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.8.0/fr_core_news_sm-3.8.0-py3-none-any.whl
+
