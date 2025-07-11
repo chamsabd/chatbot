@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from prompt_rewriter import reformuler_en_requete
 from google_search import extraire_entites, format_search_results, searxng_search,search_best_linkedin_match
@@ -71,4 +72,5 @@ def chat():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Port donné par Render
+    app.run(host="0.0.0.0", port=port, debug=True)
