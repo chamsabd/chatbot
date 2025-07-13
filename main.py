@@ -1,10 +1,36 @@
 import logging
 import os
 from flask import Flask, request, jsonify
-from prompt_rewriter import reformuler_en_requete
+from prompt_rewriter import reformuler_en_requete,reformuler_en_requete_with_groq
 from google_search import extraire_entites, format_search_results, searxng_search,search_best_linkedin_match
 from groq_wrapper import groq_search, scorer_par_groq
 
+import psutil
+import time
+import os
+from functools import wraps
+
+def monitor_resource_usage(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        process = psutil.Process(os.getpid())
+        
+        start_mem = process.memory_info().rss / 1024 / 1024  # MB
+        start_cpu = psutil.cpu_percent(interval=None)
+        start_time = time.time()
+        
+        result = func(*args, **kwargs)
+        
+        end_time = time.time()
+        end_mem = process.memory_info().rss / 1024 / 1024  # MB
+        end_cpu = psutil.cpu_percent(interval=None)
+        
+        print(f"⏱️ Execution time: {end_time - start_time:.3f} seconds")
+        print(f"🧠 RAM used: {end_mem - start_mem:.3f} MB")
+        print(f"⚙️ CPU usage: {end_cpu - start_cpu:.2f}%")
+        
+        return result
+    return wrapper
 
 
 app = Flask(__name__)
@@ -13,7 +39,9 @@ app = Flask(__name__)
 def home():
     return "API is running on Render 🚀"
 
+
 @app.route("/api/chat", methods=["POST"])
+@monitor_resource_usage
 def chat():
     data = request.get_json()
     message = data.get("message", "").strip()
@@ -25,7 +53,7 @@ def chat():
     try:
         logging.warning("Route /api/chat called")
         # Reformuler la requête
-        requete = reformuler_en_requete(message)
+        requete = reformuler_en_requete_with_groq(message)
         logging.warning("reformuler_en_requete called")
 
         # Recherche avec searxng
