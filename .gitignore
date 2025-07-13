@@ -1,3 +1,3 @@
 models/      # Ignore entire models folder and contents
-_paycache_/   # Ignore  folder named  _paycache_
+__paycache__/   # Ignore  folder named  _paycache_
 add.py       # Ignore add.py files anywhere
